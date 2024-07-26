@@ -42,22 +42,26 @@ function create() {
     this.add.image(0, 0, "board").setOrigin(0, 0)
     this.matter.world.setBounds(0, 0, 1920, 1080);
 
-    const block = this.matter.add.image(960, 540, 'bowl', null, {
-        shape: {type: 'circle'}
-    });
-    block.setBounce(0.5); // Gör så att fyrkanten studsar fullt ut
-    block.setVelocity(0, 0); // Sätter initial hastighet för att starta rörelsen
-    block.setFriction(1, 0, 0); // Ingen friktion
-    block.setAngularVelocity(0); // Sätter en initial rotationshastighet
+    function createBowl() {
+        const block = this.matter.add.image(960, 540, 'bowl', null, {
+            shape: {type: 'circle'}
+        });
+        block.setBounce(0.5); // Gör så att fyrkanten studsar fullt ut
+        block.setVelocity(0, 0); // Sätter initial hastighet för att starta rörelsen
+        block.setFriction(1, 0, 0); // Ingen friktion
+        block.setAngularVelocity(0); // Sätter en initial rotationshastighet
 
-    // Justera storlek på blocket om nödvändigt (exempel: 50x50 pixlar)
-    block.setDisplaySize(100, 100);
+        // Justera storlek på blocket om nödvändigt (exempel: 50x50 pixlar)
+        block.setDisplaySize(100, 100);
 
-    // Aktivera interaktivitet
-    block.setInteractive();
+        // Aktivera interaktivitet
+        block.setInteractive();
 
-    // Dra fyrkanten med musen
-    this.input.setDraggable(block);
+        // Dra fyrkanten med musen
+        this.input.setDraggable(block);
+    }
+
+    createBowl.call(this);
 
     // Lägg till dra-händelser
     this.input.on('dragstart', function (pointer, gameObject) {
@@ -70,8 +74,11 @@ function create() {
         gameObject.y = dragY;
     });
 
+    let self = this;
     this.input.on('dragend', function (pointer, gameObject) {
         gameObject.setVelocity(pointer.velocity.x / 10, pointer.velocity.y / 10);
+        self.input.setDraggable(gameObject, false);
+        createBowl.call(self);
     });
 }
 

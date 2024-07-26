@@ -17,7 +17,7 @@ const config = {
         default: 'matter',
         matter: {
             gravity: {y: 0}, // Ingen gravitation så att fyrkanten kan röra sig fritt
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -43,7 +43,7 @@ function create() {
     this.matter.world.setBounds(0, 0, 1920, 1080);
 
     const block = this.matter.add.image(960, 540, 'bowl', null, {
-        shape: {type: 'circle', radius: 25}
+        shape: {type: 'circle'}
     });
     block.setBounce(0.5); // Gör så att fyrkanten studsar fullt ut
     block.setVelocity(0, 0); // Sätter initial hastighet för att starta rörelsen
@@ -51,7 +51,7 @@ function create() {
     block.setAngularVelocity(0); // Sätter en initial rotationshastighet
 
     // Justera storlek på blocket om nödvändigt (exempel: 50x50 pixlar)
-    //block.setDisplaySize(50, 50);
+    block.setDisplaySize(100, 100);
 
     // Aktivera interaktivitet
     block.setInteractive();

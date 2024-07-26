@@ -9,10 +9,14 @@ const config = {
     width: 1920,
     height: 1080,
     backgroundColor: '#2d2d2d',
+    scale: {
+        mode: Phaser.Scale.FIT, // Anpassa viewporten till fönstret
+        autoCenter: Phaser.Scale.CENTER_BOTH // Centrera spelet både horisontellt och vertikalt
+    },
     physics: {
         default: 'matter',
         matter: {
-            gravity: { y: 0 }, // Ingen gravitation så att fyrkanten kan röra sig fritt
+            gravity: {y: 0}, // Ingen gravitation så att fyrkanten kan röra sig fritt
             debug: true
         }
     },
@@ -27,35 +31,51 @@ const config = {
 const game = new Phaser.Game(config);
 
 // Preload-funktionen, laddar resurser
-function preload () {
+function preload() {
+    this.load.image("board", "assets/board.png")
+    this.load.image("bowl", "assets/bowl.png")
 }
 
 // Create-funktionen, initialiserar spelet
-function create () {
+function create() {
     // Skapa väggar runt skärmen
+    this.add.image(0, 0, "board").setOrigin(0, 0)
     this.matter.world.setBounds(0, 0, 1920, 1080);
 
-    // Skapa en grafik och rita en fyrkant
-    const graphics = this.add.graphics();
-    graphics.fillStyle(0xff0000, 1); // Fyll fyrkanten med röd färg
-    graphics.fillRect(0, 0, 50, 50); // Rita en fyrkant (50x50 pixlar)
-
-    // Skapa en textur från grafiken
-    graphics.generateTexture('block', 50, 50);
-    graphics.destroy(); // Ta bort grafikobjektet eftersom vi inte längre behöver det
-
-    // Skapa en fyrkant och sätt dess egenskaper
-    const block = this.matter.add.image(960, 540, 'block');
-    block.setBounce(1); // Gör så att fyrkanten studsar fullt ut
-    block.setVelocity(10, 10); // Sätter initial hastighet för att starta rörelsen
-    block.setFriction(0, 0, 0); // Ingen friktion
-    block.setAngularVelocity(0.05); // Sätter en initial rotationshastighet
+    const block = this.matter.add.image(960, 540, 'bowl', null, {
+        shape: {type: 'circle', radius: 25}
+    });
+    block.setBounce(0.5); // Gör så att fyrkanten studsar fullt ut
+    block.setVelocity(0, 0); // Sätter initial hastighet för att starta rörelsen
+    block.setFriction(1, 0, 0); // Ingen friktion
+    block.setAngularVelocity(0); // Sätter en initial rotationshastighet
 
     // Justera storlek på blocket om nödvändigt (exempel: 50x50 pixlar)
-    block.setDisplaySize(50, 50);
+    //block.setDisplaySize(50, 50);
+
+    // Aktivera interaktivitet
+    block.setInteractive();
+
+    // Dra fyrkanten med musen
+    this.input.setDraggable(block);
+
+    // Lägg till dra-händelser
+    this.input.on('dragstart', function (pointer, gameObject) {
+        gameObject.setVelocity(0, 0);
+        gameObject.setAngularVelocity(0);
+    });
+
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+        gameObject.x = dragX;
+        gameObject.y = dragY;
+    });
+
+    this.input.on('dragend', function (pointer, gameObject) {
+        gameObject.setVelocity(pointer.velocity.x / 10, pointer.velocity.y / 10);
+    });
 }
 
 // Update-funktionen, spel-loopen
-function update () {
+function update() {
     // Uppdatera spelets logik
 }

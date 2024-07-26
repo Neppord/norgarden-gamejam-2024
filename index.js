@@ -40,6 +40,9 @@ function preload() {
 function create() {
     // Skapa väggar runt skärmen
     this.add.image(0, 0, "board").setOrigin(0, 0)
+
+    var aim = this.add.graphics();
+    aim.lineStyle(2, 0x00ff00);
     this.matter.world.setBounds(0, 0, 960, 1080);
 
     function createBowl() {
@@ -70,7 +73,8 @@ function create() {
     });
 
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-
+        aim.clear()
+        aim.lineBetween(gameObject.x, gameObject.y, pointer.x, pointer.y);
     });
 
     let self = this;
@@ -81,6 +85,7 @@ function create() {
         gameObject.setVelocity(diff_x / scale, diff_y / scale);
         self.input.setDraggable(gameObject, false);
         createBowl.call(self);
+        aim.clear()
     });
 }
 

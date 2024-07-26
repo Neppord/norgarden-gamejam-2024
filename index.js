@@ -34,10 +34,14 @@ const game = new Phaser.Game(config);
 function preload() {
     this.load.image("board", "assets/board.png")
     this.load.image("bowl", "assets/bowl.png")
+    this.load.audio("hit", "assets/hit.wav")
+    this.load.audio("hit2", "assets/hit2.wav")
 }
 
 // Create-funktionen, initialiserar spelet
 function create() {
+    var hit_sound = this.sound.add('hit2');
+    hit_sound.play();
     // Skapa väggar runt skärmen
     this.add.image(0, 0, "board").setOrigin(0, 0)
 
@@ -64,6 +68,10 @@ function create() {
         this.input.setDraggable(block);
     }
 
+    this.matter.world.on('collisionstart', function (event) {
+        hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
+        hit_sound.play();
+    });
     createBowl.call(this);
 
     // Lägg till dra-händelser
@@ -86,6 +94,7 @@ function create() {
         self.input.setDraggable(gameObject, false);
         createBowl.call(self);
         aim.clear()
+        hit_sound.detune = 0;
     });
 }
 

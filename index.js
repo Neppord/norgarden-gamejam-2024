@@ -40,7 +40,7 @@ function preload() {
 function create() {
     // Skapa väggar runt skärmen
     this.add.image(0, 0, "board").setOrigin(0, 0)
-    this.matter.world.setBounds(0, 0, 1920, 1080);
+    this.matter.world.setBounds(0, 0, 960, 1080);
 
     function createBowl() {
         const block = this.matter.add.image(960, 540, 'bowl', null, {
@@ -70,13 +70,15 @@ function create() {
     });
 
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-        gameObject.x = dragX;
-        gameObject.y = dragY;
+
     });
 
     let self = this;
     this.input.on('dragend', function (pointer, gameObject) {
-        gameObject.setVelocity(pointer.velocity.x / 10, pointer.velocity.y / 10);
+        let diff_x = gameObject.x - pointer.x;
+        let diff_y = gameObject.y - pointer.y;
+        let scale = 10;
+        gameObject.setVelocity(diff_x / scale, diff_y / scale);
         self.input.setDraggable(gameObject, false);
         createBowl.call(self);
     });

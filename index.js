@@ -42,24 +42,23 @@ class Scene extends Phaser.Scene {
             aim.lineBetween(gameObject.x, gameObject.y, pointer.x, pointer.y);
         });
 
-        let self = this;
         this.input.on('dragend', function (pointer, gameObject) {
             let y_start = gameObject.y;
             let x_start = gameObject.x;
             let diff_x = gameObject.x - pointer.x;
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
-            const bowl_image = self.add.image(x_start, y_start, "bowl");
-            const leaf_image = self.add.image(x_start, y_start, "leaf");
+            const bowl_image = this.add.image(x_start, y_start, "bowl");
+            const leaf_image = this.add.image(x_start, y_start, "leaf");
             leaf_image.setDisplaySize(100, 100)
             bowl_image.setDisplaySize(100, 100)
-            const block = self.matter.add.circle(
+            const block = this.matter.add.circle(
                 x_start,
                 y_start,
                 50
             );
-            const bowl = self.matter.add.gameObject(bowl_image, block);
-            const leaf = self.matter.add.gameObject(leaf_image, block);
+            const bowl = this.matter.add.gameObject(bowl_image, block);
+            const leaf = this.matter.add.gameObject(leaf_image, block);
             bowl.setBounce(0.5);
             bowl.setVelocity(0, 0);
             bowl.setFriction(1, 0, 0);
@@ -68,7 +67,7 @@ class Scene extends Phaser.Scene {
             aim.clear()
             hit_sound.detune = 0;
             swish_sound.play()
-        });
+        }, this);
     }
 
     update() {

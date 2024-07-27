@@ -15,6 +15,7 @@ export class Scene extends Phaser.Scene {
         new Ingredient("poppy", 0),
     ]
     flasks = []
+    selected_ingredient = null
 
     preload() {
         this.load.image("board", "assets/board.png")
@@ -87,8 +88,15 @@ export class Scene extends Phaser.Scene {
             ingredient.update_label()
         });
 
-        this.ingredients.forEach((item, index) => {
-            item.init_icon_and_label(index, this)
+        this.ingredients.forEach((ingredient, index) => {
+            ingredient.init_icon_and_label(index, this)
+            ingredient.icon.on('pointerdown', () => {
+                if (this.selected_ingredient)
+                    this.selected_ingredient.deselect();
+                this.selected_ingredient = ingredient
+                ingredient.select()
+            })
+
         })
 
         let aim = this.add.graphics();
@@ -121,19 +129,20 @@ export class Scene extends Phaser.Scene {
         });
 
         this.input.on('dragend', function (pointer, gameObject) {
+            aim.clear()
+            hit_sound.detune = 0;
+            if (!(this.selected_ingredient && this.selected_ingredient.quantity > 0)) {
+                return;
+            }
             let y_start = gameObject.y;
             let x_start = gameObject.x;
             let diff_x = gameObject.x - pointer.x;
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            let index = Phaser.Math.Between(0, this.ingredients.length - 1)
-            let ingredient = this.ingredients[index];
-            if (ingredient.quantity > 0) {
-                ingredient.quantity -= 1
-                ingredient.update_label()
-            }
-            const content_image = this.add.image(x_start, y_start, ingredient.name);
+            this.selected_ingredient.quantity -= 1
+            this.selected_ingredient.update_label()
+            const content_image = this.add.image(x_start, y_start, this.selected_ingredient.name);
             content_image.setDisplaySize(100, 100)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(
@@ -141,22 +150,19 @@ export class Scene extends Phaser.Scene {
                 y_start,
                 50
             );
-            block.ingredient_name = ingredient.name;
+            block.ingredient_name = this.selected_ingredient.name;
             const bowl = this.matter.add.gameObject(bowl_image, block);
             const content = this.matter.add.gameObject(content_image, block);
-
             block.objects_to_destroy = [
                 bowl, content
             ]
-
             bowl.setBounce(0.5);
             bowl.setVelocity(0, 0);
             bowl.setFriction(0.05, 0.01, 0.1);
             bowl.setAngularVelocity(0);
             bowl.setVelocity(diff_x / scale, diff_y / scale);
-            aim.clear()
-            hit_sound.detune = 0;
             swish_sound.play()
+
         }, this);
     }
 

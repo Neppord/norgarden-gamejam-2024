@@ -13,45 +13,28 @@ class Scene extends Phaser.Scene {
         let swish_sound = this.sound.add('swish');
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
+        const spawnpoint = this.add.image(960, 540, "bowl");
+        spawnpoint.setTint(0xff0000)
+            .setDisplaySize(100, 100)
+            .setInteractive()
+        this.input.setDraggable(spawnpoint);
+        const spawnpoint2 = this.add.image(60, 540, "bowl");
+        spawnpoint2.setTint(0x00ff00)
+            .setDisplaySize(100, 100)
+            .setInteractive()
+        this.input.setDraggable(spawnpoint2);
 
         let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
         this.matter.world.setBounds(0, 0, 960, 1080);
 
-        function createBowl() {
-            const bowl_image = this.add.image(960, 548, "bowl");
-            const leaf_image = this.add.image(960, 548, "leaf");
-            leaf_image.setDisplaySize(100,100)
-            bowl_image.setDisplaySize(100, 100)
-            const block = this.matter.add.circle(
-                960,
-                540,
-                50
-                );
-            const bowl = this.matter.add.gameObject(bowl_image, block);
-            const leaf = this.matter.add.gameObject(leaf_image, block);
-            bowl.setBounce(0.5);
-            bowl.setVelocity(0, 0);
-            bowl.setFriction(1, 0, 0);
-            bowl.setAngularVelocity(0);
-
-            //bowl.setDisplaySize(100, 100);
-            //leaf.setDisplaySize(60, 60);
-            bowl.setSensor(true)
-
-            bowl.setInteractive();
-            this.input.setDraggable(bowl);
-        }
-
         this.matter.world.on('collisionstart', function (event) {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
         });
-        createBowl.call(this);
 
         this.input.on('dragstart', function (pointer, gameObject) {
-            gameObject.setVelocity(0, 0);
-            gameObject.setAngularVelocity(0);
+
         });
 
         this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -61,13 +44,27 @@ class Scene extends Phaser.Scene {
 
         let self = this;
         this.input.on('dragend', function (pointer, gameObject) {
+            let y_start = gameObject.y;
+            let x_start = gameObject.x;
             let diff_x = gameObject.x - pointer.x;
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
-            gameObject.setVelocity(diff_x / scale, diff_y / scale);
-            self.input.setDraggable(gameObject, false);
-            createBowl.call(self);
-            gameObject.setSensor(false)
+            const bowl_image = self.add.image(x_start, y_start, "bowl");
+            const leaf_image = self.add.image(x_start, y_start, "leaf");
+            leaf_image.setDisplaySize(100, 100)
+            bowl_image.setDisplaySize(100, 100)
+            const block = self.matter.add.circle(
+                x_start,
+                y_start,
+                50
+            );
+            const bowl = self.matter.add.gameObject(bowl_image, block);
+            const leaf = self.matter.add.gameObject(leaf_image, block);
+            bowl.setBounce(0.5);
+            bowl.setVelocity(0, 0);
+            bowl.setFriction(1, 0, 0);
+            bowl.setAngularVelocity(0);
+            bowl.setVelocity(diff_x / scale, diff_y / scale);
             aim.clear()
             hit_sound.detune = 0;
             swish_sound.play()

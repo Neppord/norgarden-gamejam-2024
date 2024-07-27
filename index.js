@@ -2,6 +2,7 @@ class Scene extends Phaser.Scene {
     preload() {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
+        this.load.image("sigil", "assets/sigil.png")
         this.load.image("leaf", "assets/leaf.png")
         this.load.audio("hit", "assets/hit.wav")
         this.load.audio("swish", "assets/swish.wav")
@@ -13,6 +14,7 @@ class Scene extends Phaser.Scene {
         let swish_sound = this.sound.add('swish');
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
+        this.add.image(43,43, "sigil").setOrigin(0, 0)
         const spawnpoint = this.add.image(960, 540, "bowl");
         spawnpoint.setTint(0xff0000)
             .setDisplaySize(100, 100)
@@ -26,7 +28,7 @@ class Scene extends Phaser.Scene {
 
         let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
-        this.matter.world.setBounds(0, 0, 960, 1080);
+        this.matter.world.setBounds(0, 0, 1138, 1080);
 
         this.matter.world.on('collisionstart', function (event) {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);

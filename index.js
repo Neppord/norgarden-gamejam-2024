@@ -33,6 +33,11 @@ class Scene extends Phaser.Scene {
         this.createSpawnpoint(896+43, 581+43);
         this.createSpawnpoint(533+43, 836+43);
 
+        this.ingredients.forEach( (item, index) => {
+            this.add.image(1280 + index * 120, 50, item).setDisplaySize(100, 100)
+            this.add.text(1280 + index * 120, 100, item, { font: '32px Arial', fill: '#ffffff' });
+        })
+
         let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
         this.matter.world.setBounds(0, 0, 1138, 1080);

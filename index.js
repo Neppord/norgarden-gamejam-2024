@@ -2,17 +2,33 @@ class Scene extends Phaser.Scene {
 
     ingredients = {
 
-        "leaf": 0,
-        "dust_gold": 0,
-        "dust_purple": 0,
-        "dust_blue": 0,
-        "dust_green": 0,
-        "dust_red": 0,
-        "eye": 0,
-        "poppy": 0,
+        "leaf": 10,
+        "dust_gold": 10,
+        "dust_purple": 10,
+        "dust_blue": 10,
+        "dust_green": 10,
+        "dust_red": 10,
+        "eye": 10,
+        "poppy": 10,
 
     }
+    ingredient_labels = {
 
+        "leaf": null,
+        "dust_gold": null,
+        "dust_purple": null,
+        "dust_blue": null,
+        "dust_green": null,
+        "dust_red": null,
+        "eye": null,
+        "poppy": null,
+
+    }
+    update_ingredient_labels() {
+        Object.keys(this.ingredients).forEach((ingredient_name, index) => {
+            this.ingredient_labels[ingredient_name].setText(this.ingredients[ingredient_name]);
+        })
+    }
     preload() {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
@@ -42,7 +58,7 @@ class Scene extends Phaser.Scene {
             this.add
                 .image(1280 + index * (size + 20), 50, ingredient_name)
                 .setDisplaySize(size, size)
-            this.add.text(
+            this.ingredient_labels[ingredient_name] = this.add.text(
                 1280 + index * (size + 20),
                 100,
                 this.ingredients[ingredient_name],
@@ -76,7 +92,12 @@ class Scene extends Phaser.Scene {
             const bowl_image = this.add.image(x_start, y_start, "bowl");
             let ingredient_names = Object.keys(this.ingredients);
             let index = Phaser.Math.Between(0, ingredient_names.length - 1)
-            const content_image = this.add.image(x_start, y_start, ingredient_names[index]);
+            let ingredient_name = ingredient_names[index];
+            if(this.ingredients[ingredient_name] > 0) {
+                this.ingredients[ingredient_name] -= 1
+            }
+            this.update_ingredient_labels();
+            const content_image = this.add.image(x_start, y_start, ingredient_name);
             content_image.setDisplaySize(60, 60)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(

@@ -1,10 +1,21 @@
 class Scene extends Phaser.Scene {
+     ingredients = [
+         "leaf",
+         "dust_gold",
+         "dust_purple",
+         "dust_blue",
+         "dust_green",
+         "dust_red",
+         "eye",
+         "poppy"]
+
     preload() {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
         this.load.image("sigil", "assets/sigil.png")
-        this.load.image("leaf", "assets/leaf.png")
-        this.load.image("dust_gold", "assets/dust_gold.png")
+        this.ingredients.forEach( (item, index) => {
+            this.load.image(item, "assets/" + item + ".png");
+        } )
         this.load.audio("hit", "assets/hit.wav")
         this.load.audio("swish", "assets/swish.wav")
         this.load.audio("hit2", "assets/hit2.wav")
@@ -47,9 +58,8 @@ class Scene extends Phaser.Scene {
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            let contents = ["leaf", "dust_gold"]
-            let index = Phaser.Math.Between(0, contents.length - 1)
-            const content_image = this.add.image(x_start, y_start, contents[index]);
+            let index = Phaser.Math.Between(0, this.ingredients.length - 1)
+            const content_image = this.add.image(x_start, y_start, this.ingredients[index]);
             content_image.setDisplaySize(60, 60)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(

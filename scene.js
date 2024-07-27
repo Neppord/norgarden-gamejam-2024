@@ -1,34 +1,20 @@
 import {Ingredient} from "./ingredient.js";
 
 export class Scene extends Phaser.Scene {
-
-    ingredients = {
-        "leaf": 0,
-        "dust_gold": 0,
-        "dust_purple": 0,
-        "dust_blue": 0,
-        "dust_green": 0,
-        "dust_red": 0,
-        "eye": 0,
-        "poppy": 0,
-    }
-    ingredient_labels = {
-
-        "leaf": null,
-        "dust_gold": null,
-        "dust_purple": null,
-        "dust_blue": null,
-        "dust_green": null,
-        "dust_red": null,
-        "eye": null,
-        "poppy": null,
-
-    }
-
+    ingredients = [
+        new Ingredient("leaf", 0),
+        new Ingredient("dust_gold", 0),
+        new Ingredient("dust_purple", 0),
+        new Ingredient("dust_blue", 0),
+        new Ingredient("dust_green", 0),
+        new Ingredient("dust_red", 0),
+        new Ingredient("eye", 0),
+        new Ingredient("poppy", 0),
+    ]
     update_ingredient_labels() {
-        this.getIngredientNames().forEach((ingredient_name, index) => {
-            let ingredientLabel = this.ingredient_labels[ingredient_name];
-            ingredientLabel.setText(this.ingredients[ingredient_name]);
+        this.ingredients.forEach(ingredient => {
+            if (ingredient.label)
+                ingredient.label.setText(ingredient.quantity)
         })
     }
 
@@ -65,14 +51,13 @@ export class Scene extends Phaser.Scene {
         booster_button
             .setInteractive()
         booster_button.on("pointerdown", () => {
-            let ingredientNames = this.getIngredientNames();
-            let index = Phaser.Math.Between(0, ingredientNames.length - 1)
-            this.ingredients[ingredientNames[index]] += 3;
+            let index = Phaser.Math.Between(0, this.ingredients.length - 1)
+            this.ingredients[index].quantity += 3;
             this.update_ingredient_labels()
         });
 
-        this.getIngredientNames().forEach((ingredient_name, index) => {
-            (new Ingredient(ingredient_name, 0)).init_icon_and_label(index, this);
+        this.ingredients.forEach((item, index) => {
+            item.init_icon_and_label(index, this)
         })
 
         let aim = this.add.graphics();
@@ -100,11 +85,11 @@ export class Scene extends Phaser.Scene {
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            let ingredient_names = Object.keys(this.ingredients);
+            let ingredient_names = this.getIngredientNames();
             let index = Phaser.Math.Between(0, ingredient_names.length - 1)
             let ingredient_name = ingredient_names[index];
-            if (this.ingredients[ingredient_name] > 0) {
-                this.ingredients[ingredient_name] -= 1
+            if (this.ingredients[index].quantity > 0) {
+                this.ingredients[index].quantity -= 1
             }
             this.update_ingredient_labels();
             const content_image = this.add.image(x_start, y_start, ingredient_name);
@@ -131,7 +116,7 @@ export class Scene extends Phaser.Scene {
 
 
     getIngredientNames() {
-        return Object.keys(this.ingredients);
+        return this.ingredients.map(i => i.name);
     }
 
     createSpawnpoint(x, y) {

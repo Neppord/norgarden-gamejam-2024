@@ -9,7 +9,7 @@ export class Ingredient {
         this.icon = scene.add
             .image(1280 + index * (size + 20), 50, this.name)
             .setDisplaySize(size, size)
-        this.label = scene.ingredient_labels[this.name] = scene.add.text(
+        this.label = scene.add.text(
             1280 + index * (size + 20),
             100,
             this.quantity,

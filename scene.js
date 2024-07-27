@@ -1,3 +1,5 @@
+import {Ingredient} from "./ingredient.js";
+
 export class Scene extends Phaser.Scene {
 
     ingredients = {
@@ -25,7 +27,8 @@ export class Scene extends Phaser.Scene {
 
     update_ingredient_labels() {
         this.getIngredientNames().forEach((ingredient_name, index) => {
-            this.ingredient_labels[ingredient_name].setText(this.ingredients[ingredient_name]);
+            let ingredientLabel = this.ingredient_labels[ingredient_name];
+            ingredientLabel.setText(this.ingredients[ingredient_name]);
         })
     }
 
@@ -69,15 +72,7 @@ export class Scene extends Phaser.Scene {
         });
 
         this.getIngredientNames().forEach((ingredient_name, index) => {
-            let size = 50;
-            this.add
-                .image(1280 + index * (size + 20), 50, ingredient_name)
-                .setDisplaySize(size, size)
-            this.ingredient_labels[ingredient_name] = this.add.text(
-                1280 + index * (size + 20),
-                100,
-                this.ingredients[ingredient_name],
-                {font: '32px Arial', fill: '#ffffff'});
+            (new Ingredient(ingredient_name, 0)).init_icon_and_label(index, this);
         })
 
         let aim = this.add.graphics();
@@ -132,6 +127,8 @@ export class Scene extends Phaser.Scene {
             swish_sound.play()
         }, this);
     }
+
+
 
     getIngredientNames() {
         return Object.keys(this.ingredients);

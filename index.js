@@ -1,21 +1,25 @@
 class Scene extends Phaser.Scene {
-     ingredients = [
-         "leaf",
-         "dust_gold",
-         "dust_purple",
-         "dust_blue",
-         "dust_green",
-         "dust_red",
-         "eye",
-         "poppy"]
+
+    ingredients = {
+
+        "leaf": 0,
+        "dust_gold": 0,
+        "dust_purple": 0,
+        "dust_blue": 0,
+        "dust_green": 0,
+        "dust_red": 0,
+        "eye": 0,
+        "poppy": 0,
+
+    }
 
     preload() {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
         this.load.image("sigil", "assets/sigil.png")
-        this.ingredients.forEach( (item, index) => {
+        Object.keys(this.ingredients).forEach((item, index) => {
             this.load.image(item, "assets/" + item + ".png");
-        } )
+        })
         this.load.audio("hit", "assets/hit.wav")
         this.load.audio("swish", "assets/swish.wav")
         this.load.audio("hit2", "assets/hit2.wav")
@@ -26,16 +30,23 @@ class Scene extends Phaser.Scene {
         let swish_sound = this.sound.add('swish');
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
-        this.add.image(43,43, "sigil").setOrigin(0, 0)
-        this.createSpawnpoint(304+43, 155+43);
-        this.createSpawnpoint(754+43, 162+43);
-        this.createSpawnpoint(157+43, 586+43);
-        this.createSpawnpoint(896+43, 581+43);
-        this.createSpawnpoint(533+43, 836+43);
+        this.add.image(43, 43, "sigil").setOrigin(0, 0)
+        this.createSpawnpoint(304 + 43, 155 + 43);
+        this.createSpawnpoint(754 + 43, 162 + 43);
+        this.createSpawnpoint(157 + 43, 586 + 43);
+        this.createSpawnpoint(896 + 43, 581 + 43);
+        this.createSpawnpoint(533 + 43, 836 + 43);
 
-        this.ingredients.forEach( (item, index) => {
-            this.add.image(1280 + index * 120, 50, item).setDisplaySize(100, 100)
-            this.add.text(1280 + index * 120, 100, item, { font: '32px Arial', fill: '#ffffff' });
+        Object.keys(this.ingredients).forEach((ingredient_name, index) => {
+            let size = 50;
+            this.add
+                .image(1280 + index * (size + 20), 50, ingredient_name)
+                .setDisplaySize(size, size)
+            this.add.text(
+                1280 + index * (size + 20),
+                100,
+                this.ingredients[ingredient_name],
+                {font: '32px Arial', fill: '#ffffff'});
         })
 
         let aim = this.add.graphics();
@@ -63,8 +74,9 @@ class Scene extends Phaser.Scene {
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            let index = Phaser.Math.Between(0, this.ingredients.length - 1)
-            const content_image = this.add.image(x_start, y_start, this.ingredients[index]);
+            let ingredient_names = Object.keys(this.ingredients);
+            let index = Phaser.Math.Between(0, ingredient_names.length - 1)
+            const content_image = this.add.image(x_start, y_start, ingredient_names[index]);
             content_image.setDisplaySize(60, 60)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(

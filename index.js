@@ -4,6 +4,7 @@ class Scene extends Phaser.Scene {
         this.load.image("bowl", "assets/bowl.png")
         this.load.image("sigil", "assets/sigil.png")
         this.load.image("leaf", "assets/leaf.png")
+        this.load.image("dust_gold", "assets/dust_gold.png")
         this.load.audio("hit", "assets/hit.wav")
         this.load.audio("swish", "assets/swish.wav")
         this.load.audio("hit2", "assets/hit2.wav")
@@ -46,8 +47,10 @@ class Scene extends Phaser.Scene {
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            const leaf_image = this.add.image(x_start, y_start, "leaf");
-            leaf_image.setDisplaySize(100, 100)
+            let contents = ["leaf", "dust_gold"]
+            let index = Phaser.Math.Between(0, contents.length - 1)
+            const content_image = this.add.image(x_start, y_start, contents[index]);
+            content_image.setDisplaySize(60, 60)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(
                 x_start,
@@ -55,10 +58,10 @@ class Scene extends Phaser.Scene {
                 50
             );
             const bowl = this.matter.add.gameObject(bowl_image, block);
-            const leaf = this.matter.add.gameObject(leaf_image, block);
+            const content = this.matter.add.gameObject(content_image, block);
             bowl.setBounce(0.5);
             bowl.setVelocity(0, 0);
-            bowl.setFriction(1, 0, 0);
+            bowl.setFriction(0.05, 0.01, 0.1);
             bowl.setAngularVelocity(0);
             bowl.setVelocity(diff_x / scale, diff_y / scale);
             aim.clear()

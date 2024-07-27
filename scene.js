@@ -85,14 +85,13 @@ export class Scene extends Phaser.Scene {
             let diff_y = gameObject.y - pointer.y;
             let scale = 10;
             const bowl_image = this.add.image(x_start, y_start, "bowl");
-            let ingredient_names = this.getIngredientNames();
-            let index = Phaser.Math.Between(0, ingredient_names.length - 1)
-            let ingredient_name = ingredient_names[index];
-            if (this.ingredients[index].quantity > 0) {
-                this.ingredients[index].quantity -= 1
+            let index = Phaser.Math.Between(0, this.ingredients.length - 1)
+            let ingredient = this.ingredients[index];
+            if (ingredient.quantity > 0) {
+                ingredient.quantity -= 1
             }
             this.update_ingredient_labels();
-            const content_image = this.add.image(x_start, y_start, ingredient_name);
+            const content_image = this.add.image(x_start, y_start, ingredient.name);
             content_image.setDisplaySize(100, 100)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(

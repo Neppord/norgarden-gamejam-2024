@@ -17,8 +17,16 @@ class Scene extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 1080);
 
         function createBowl() {
-            const block = this.matter.add.image(960, 540, 'bowl', null, {
-                shape: {type: 'circle'}
+            const block = this.matter.add.image(
+                960,
+                540,
+                'bowl',
+                null,
+                {
+                    shape:
+                        {
+                            type: 'circle'
+                        }
             });
             block.setBounce(0.5);
             block.setVelocity(0, 0);
@@ -26,6 +34,7 @@ class Scene extends Phaser.Scene {
             block.setAngularVelocity(0);
 
             block.setDisplaySize(100, 100);
+            block.setSensor(true)
 
             block.setInteractive();
             this.input.setDraggable(block);
@@ -55,6 +64,7 @@ class Scene extends Phaser.Scene {
             gameObject.setVelocity(diff_x / scale, diff_y / scale);
             self.input.setDraggable(gameObject, false);
             createBowl.call(self);
+            gameObject.setSensor(false)
             aim.clear()
             hit_sound.detune = 0;
         });

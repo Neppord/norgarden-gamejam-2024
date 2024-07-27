@@ -1,7 +1,6 @@
 import {Ingredient} from "./ingredient.js";
 
 const RIGHT_FRAME_OFFSET = 1138;
-
 const PADDING = 43;
 
 export class Scene extends Phaser.Scene {
@@ -100,12 +99,12 @@ export class Scene extends Phaser.Scene {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
             if (bodyA.ingredient_name === bodyB.ingredient_name) {
-                let x = bodyA.x
-                let y = bodyA.y
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
-                const flask = this.add.image(1500, 300, "flask1");
+                let texture = "flask1";
+                if (bodyA.ingredient_name === "eye") texture = "flask2";
+                const flask = this.add.image(0, 300, texture);
                 flask.setInteractive()
                 this.flasks.push(flask)
                 this.position_flasks()

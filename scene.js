@@ -1,5 +1,9 @@
 import {Ingredient} from "./ingredient.js";
 
+const RIGHT_FRAME_OFFSET = 1138;
+
+const PADDING = 43;
+
 export class Scene extends Phaser.Scene {
     ingredients = [
         new Ingredient("leaf", 0),
@@ -11,6 +15,7 @@ export class Scene extends Phaser.Scene {
         new Ingredient("eye", 0),
         new Ingredient("poppy", 0),
     ]
+    flasks = []
 
     preload() {
         this.load.image("board", "assets/board.png")
@@ -32,12 +37,12 @@ export class Scene extends Phaser.Scene {
         let swish_sound = this.sound.add('swish');
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
-        this.add.image(43, 43, "sigil").setOrigin(0, 0)
-        this.createSpawnpoint(304 + 43, 155 + 43);
-        this.createSpawnpoint(754 + 43, 162 + 43);
-        this.createSpawnpoint(157 + 43, 586 + 43);
-        this.createSpawnpoint(896 + 43, 581 + 43);
-        this.createSpawnpoint(533 + 43, 836 + 43);
+        this.add.image(PADDING, PADDING, "sigil").setOrigin(0, 0)
+        this.createSpawnpoint(304 + PADDING, 155 + PADDING);
+        this.createSpawnpoint(754 + PADDING, 162 + PADDING);
+        this.createSpawnpoint(157 + PADDING, 586 + PADDING);
+        this.createSpawnpoint(896 + PADDING, 581 + PADDING);
+        this.createSpawnpoint(533 + PADDING, 836 + PADDING);
 
         const booster_button = this.add.image(
             1529,
@@ -89,7 +94,7 @@ export class Scene extends Phaser.Scene {
 
         let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
-        this.matter.world.setBounds(0, 0, 1138, 1080);
+        this.matter.world.setBounds(0, 0, RIGHT_FRAME_OFFSET, 1080);
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
@@ -102,6 +107,8 @@ export class Scene extends Phaser.Scene {
 
                 const flask = this.add.image(1500, 300, "flask1");
                 flask.setInteractive()
+                this.flasks.push(flask)
+                this.position_flasks()
             }
         });
 
@@ -169,4 +176,9 @@ export class Scene extends Phaser.Scene {
     update() {
     }
 
+    position_flasks() {
+        this.flasks.forEach((flask, index) => {
+            flask.x = RIGHT_FRAME_OFFSET + PADDING + flask.width / 2 + index * 50
+        })
+    }
 }

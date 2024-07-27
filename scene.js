@@ -17,6 +17,8 @@ export class Scene extends Phaser.Scene {
         this.load.image("bowl", "assets/bowl.png")
         this.load.image("sigil", "assets/sigil.png")
         this.load.image("button1", "assets/button1.png")
+        this.load.image("flask1", "assets/flask1.png")
+        this.load.image("flask2", "assets/flask2.png")
         this.getIngredientNames().forEach((item, index) => {
             this.load.image(item, "assets/" + item + ".png");
         })
@@ -89,9 +91,18 @@ export class Scene extends Phaser.Scene {
         aim.lineStyle(2, 0x00ff00);
         this.matter.world.setBounds(0, 0, 1138, 1080);
 
-        this.matter.world.on('collisionstart', function (event) {
+        this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
+            if (bodyA.ingredient_name === bodyB.ingredient_name) {
+                let x = bodyA.x
+                let y = bodyA.y
+                bodyA.objects_to_destroy.forEach(o => o.destroy())
+                bodyB.objects_to_destroy.forEach(o => o.destroy())
+
+                const flask = this.add.image(1500, 300, "flask1");
+                flask.setInteractive()
+            }
         });
 
         this.input.on('dragstart', function (pointer, gameObject) {
@@ -124,8 +135,14 @@ export class Scene extends Phaser.Scene {
                 y_start,
                 50
             );
+            block.ingredient_name = ingredient.name;
             const bowl = this.matter.add.gameObject(bowl_image, block);
             const content = this.matter.add.gameObject(content_image, block);
+
+            block.objects_to_destroy = [
+                bowl, content
+            ]
+
             bowl.setBounce(0.5);
             bowl.setVelocity(0, 0);
             bowl.setFriction(0.05, 0.01, 0.1);
@@ -136,8 +153,6 @@ export class Scene extends Phaser.Scene {
             swish_sound.play()
         }, this);
     }
-
-
 
     getIngredientNames() {
         return this.ingredients.map(i => i.name);

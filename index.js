@@ -14,7 +14,6 @@ const game = new Phaser.Game({
         matter: {
             gravity: {y: 0},
             debug: false
-
         }
     },
     scene: Scene

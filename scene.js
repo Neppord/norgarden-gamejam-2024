@@ -115,7 +115,7 @@ export class Scene extends Phaser.Scene {
             }
             this.update_ingredient_labels();
             const content_image = this.add.image(x_start, y_start, ingredient_name);
-            content_image.setDisplaySize(60, 60)
+            content_image.setDisplaySize(100, 100)
             bowl_image.setDisplaySize(100, 100)
             const block = this.matter.add.circle(
                 x_start,

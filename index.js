@@ -2,14 +2,14 @@ class Scene extends Phaser.Scene {
 
     ingredients = {
 
-        "leaf": 10,
-        "dust_gold": 10,
-        "dust_purple": 10,
-        "dust_blue": 10,
-        "dust_green": 10,
-        "dust_red": 10,
-        "eye": 10,
-        "poppy": 10,
+        "leaf": 0,
+        "dust_gold": 0,
+        "dust_purple": 0,
+        "dust_blue": 0,
+        "dust_green": 0,
+        "dust_red": 0,
+        "eye": 0,
+        "poppy": 0,
 
     }
     ingredient_labels = {
@@ -25,7 +25,7 @@ class Scene extends Phaser.Scene {
 
     }
     update_ingredient_labels() {
-        Object.keys(this.ingredients).forEach((ingredient_name, index) => {
+        this.getIngredientNames().forEach((ingredient_name, index) => {
             this.ingredient_labels[ingredient_name].setText(this.ingredients[ingredient_name]);
         })
     }
@@ -33,7 +33,8 @@ class Scene extends Phaser.Scene {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
         this.load.image("sigil", "assets/sigil.png")
-        Object.keys(this.ingredients).forEach((item, index) => {
+        this.load.image("button1", "assets/button1.png")
+        this.getIngredientNames().forEach((item, index) => {
             this.load.image(item, "assets/" + item + ".png");
         })
         this.load.audio("hit", "assets/hit.wav")
@@ -53,7 +54,21 @@ class Scene extends Phaser.Scene {
         this.createSpawnpoint(896 + 43, 581 + 43);
         this.createSpawnpoint(533 + 43, 836 + 43);
 
-        Object.keys(this.ingredients).forEach((ingredient_name, index) => {
+        const ingredient_button = this.add.image(
+            1529,
+            500,
+            "button1"
+        );
+        ingredient_button
+            .setInteractive()
+        ingredient_button.on("pointerdown", () => {
+            let ingredientNames = this.getIngredientNames();
+            let index = Phaser.Math.Between(0, ingredientNames.length-1)
+            this.ingredients[ingredientNames[index]] += 3;
+            this.update_ingredient_labels()
+        });
+
+        this.getIngredientNames().forEach((ingredient_name, index) => {
             let size = 50;
             this.add
                 .image(1280 + index * (size + 20), 50, ingredient_name)
@@ -118,6 +133,10 @@ class Scene extends Phaser.Scene {
         }, this);
     }
 
+    getIngredientNames() {
+        return Object.keys(this.ingredients);
+    }
+
     createSpawnpoint(x, y) {
         const spawnpoint = this.add.image(x, y, "bowl");
         spawnpoint.setAlpha(0.6)
@@ -144,7 +163,7 @@ const config = {
         default: 'matter',
         matter: {
             gravity: {y: 0},
-            debug: true
+            debug: false
 
         }
     },

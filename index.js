@@ -15,16 +15,11 @@ class Scene extends Phaser.Scene {
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
         this.add.image(43,43, "sigil").setOrigin(0, 0)
-        const spawnpoint = this.add.image(960, 540, "bowl");
-        spawnpoint.setTint(0xff0000)
-            .setDisplaySize(100, 100)
-            .setInteractive()
-        this.input.setDraggable(spawnpoint);
-        const spawnpoint2 = this.add.image(60, 540, "bowl");
-        spawnpoint2.setTint(0x00ff00)
-            .setDisplaySize(100, 100)
-            .setInteractive()
-        this.input.setDraggable(spawnpoint2);
+        this.createSpawnpoint(304+43, 155+43);
+        this.createSpawnpoint(754+43, 162+43);
+        this.createSpawnpoint(157+43, 586+43);
+        this.createSpawnpoint(896+43, 581+43);
+        this.createSpawnpoint(533+43, 836+43);
 
         let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
@@ -70,6 +65,14 @@ class Scene extends Phaser.Scene {
             hit_sound.detune = 0;
             swish_sound.play()
         }, this);
+    }
+
+    createSpawnpoint(x, y) {
+        const spawnpoint = this.add.image(x, y, "bowl");
+        spawnpoint.setAlpha(0.6)
+            .setDisplaySize(100, 100)
+            .setInteractive()
+        this.input.setDraggable(spawnpoint);
     }
 
     update() {

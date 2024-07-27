@@ -42,8 +42,29 @@ export class Scene extends Phaser.Scene {
             500,
             "button1"
         );
-        booster_button
-            .setInteractive()
+        booster_button.setInteractive()
+        let shake = this.tweens.add({
+            targets: booster_button,
+            angle: { from: -10, to: 10 },
+            duration: 100,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1,
+            paused:true,
+        })
+        booster_button.on("pointerover", () =>{
+            shake.play()
+        })
+        booster_button.on("pointerout", () =>{
+            shake.pause()
+            this.tweens.add({
+                targets: booster_button,
+                angle: 0,
+                duration: 100,
+                ease: 'Sine.easeInOut'
+            })
+        })
+
         booster_button.on("pointerdown", () => {
             let index = Phaser.Math.Between(0, this.ingredients.length - 1)
             let ingredient = this.ingredients[index];

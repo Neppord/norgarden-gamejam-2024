@@ -11,12 +11,6 @@ export class Scene extends Phaser.Scene {
         new Ingredient("eye", 0),
         new Ingredient("poppy", 0),
     ]
-    update_ingredient_labels() {
-        this.ingredients.forEach(ingredient => {
-            if (ingredient.label)
-                ingredient.label.setText(ingredient.quantity)
-        })
-    }
 
     preload() {
         this.load.image("board", "assets/board.png")
@@ -52,8 +46,18 @@ export class Scene extends Phaser.Scene {
             .setInteractive()
         booster_button.on("pointerdown", () => {
             let index = Phaser.Math.Between(0, this.ingredients.length - 1)
-            this.ingredients[index].quantity += 3;
-            this.update_ingredient_labels()
+            let ingredient = this.ingredients[index];
+            ingredient.quantity += 3;
+            this.tweens.add({
+                targets: ingredient.icon,
+                scaleX: 0.5,
+                scaleY: 0.5,
+                duration: 100,
+                ease: 'Power2',
+                yoyo: true,
+                repeat: 2,
+            })
+            ingredient.update_label()
         });
 
         this.ingredients.forEach((item, index) => {
@@ -89,8 +93,8 @@ export class Scene extends Phaser.Scene {
             let ingredient = this.ingredients[index];
             if (ingredient.quantity > 0) {
                 ingredient.quantity -= 1
+                ingredient.update_label()
             }
-            this.update_ingredient_labels();
             const content_image = this.add.image(x_start, y_start, ingredient.name);
             content_image.setDisplaySize(100, 100)
             bowl_image.setDisplaySize(100, 100)

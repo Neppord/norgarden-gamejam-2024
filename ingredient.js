@@ -3,7 +3,9 @@ export class Ingredient {
         this.name = name;
         this.quantity = quantity;
     }
-
+    update_label() {
+        if (this.label) this.label.setText(this.quantity)
+    }
     init_icon_and_label(index, scene) {
         let size = 50;
         this.icon = scene.add

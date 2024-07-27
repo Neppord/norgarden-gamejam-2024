@@ -3,16 +3,17 @@ class Scene extends Phaser.Scene {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
         this.load.audio("hit", "assets/hit.wav")
+        this.load.audio("swish", "assets/swish.wav")
         this.load.audio("hit2", "assets/hit2.wav")
     }
 
     create() {
-        var hit_sound = this.sound.add('hit2');
-        hit_sound.play();
+        let hit_sound = this.sound.add('hit2');
+        let swish_sound = this.sound.add('swish');
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
 
-        var aim = this.add.graphics();
+        let aim = this.add.graphics();
         aim.lineStyle(2, 0x00ff00);
         this.matter.world.setBounds(0, 0, 960, 1080);
 
@@ -67,6 +68,7 @@ class Scene extends Phaser.Scene {
             gameObject.setSensor(false)
             aim.clear()
             hit_sound.detune = 0;
+            swish_sound.play()
         });
     }
 

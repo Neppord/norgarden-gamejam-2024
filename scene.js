@@ -1,7 +1,6 @@
 export class Scene extends Phaser.Scene {
 
     ingredients = {
-
         "leaf": 0,
         "dust_gold": 0,
         "dust_purple": 0,
@@ -10,7 +9,6 @@ export class Scene extends Phaser.Scene {
         "dust_red": 0,
         "eye": 0,
         "poppy": 0,
-
     }
     ingredient_labels = {
 
@@ -56,14 +54,14 @@ export class Scene extends Phaser.Scene {
         this.createSpawnpoint(896 + 43, 581 + 43);
         this.createSpawnpoint(533 + 43, 836 + 43);
 
-        const ingredient_button = this.add.image(
+        const booster_button = this.add.image(
             1529,
             500,
             "button1"
         );
-        ingredient_button
+        booster_button
             .setInteractive()
-        ingredient_button.on("pointerdown", () => {
+        booster_button.on("pointerdown", () => {
             let ingredientNames = this.getIngredientNames();
             let index = Phaser.Math.Between(0, ingredientNames.length - 1)
             this.ingredients[ingredientNames[index]] += 3;

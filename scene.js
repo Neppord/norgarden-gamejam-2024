@@ -22,7 +22,12 @@ export class Scene extends Phaser.Scene {
     preload() {
         this.load.image("board", "assets/board.png")
         this.load.image("bowl", "assets/bowl.png")
-        this.load.image("sigil", "assets/sigil.png")
+        this.load.image("sigil", "assets/sigil_pentagram_w.png")
+        this.load.image("sigil_orbit", "assets/sigil_orbit_w.png")
+        this.load.image("sigil_rivets", "assets/sigil_rivets_w.png")
+        this.load.image("sigil_sun", "assets/sigil_sun_w.png")
+        this.load.image("sigil_triangle", "assets/sigil_triangle_w.png")
+        this.load.image("sigil_xo", "assets/sigil_xo_w.png")
         this.load.image("button1", "assets/button1.png")
         this.load.image("flask1", "assets/flask1.png")
         this.load.image("flask2", "assets/flask2.png")
@@ -43,6 +48,11 @@ export class Scene extends Phaser.Scene {
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
         this.add.image(PADDING, PADDING, "sigil").setOrigin(0, 0)
+        this.add.image(PADDING, PADDING, "sigil_orbit").setOrigin(0, 0)
+        this.add.image(PADDING, PADDING, "sigil_rivets").setOrigin(0, 0)
+        this.add.image(PADDING, PADDING, "sigil_sun").setOrigin(0, 0)
+        this.add.image(PADDING, PADDING, "sigil_triangle").setOrigin(0, 0)
+        this.add.image(PADDING, PADDING, "sigil_xo").setOrigin(0, 0)
         this.createSpawnpoint(304 + PADDING, 155 + PADDING);
         this.createSpawnpoint(754 + PADDING, 162 + PADDING);
         this.createSpawnpoint(157 + PADDING, 586 + PADDING);
@@ -122,17 +132,14 @@ export class Scene extends Phaser.Scene {
                 this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
-
             } else if (a_name === "leaf" && b_name === "poppy") {
                 this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
-
             } else if (a_name === "poppy" && b_name === "leaf") {
                 this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
-
             } else if (a_name === "poppy" && b_name === "poppy") {
                 this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())

@@ -51,10 +51,10 @@ export class Scene extends Phaser.Scene {
         this.add.image(PADDING, PADDING, "sigil").setOrigin(0, 0)
         this.sigil_corners = [
             this.createCorner("sigil_rivets", 304 + PADDING, 155 + PADDING),
-            this.createCorner("sigil_orbit", 754 + PADDING, 162 + PADDING),
-            this.createCorner("sigil_sun", 157 + PADDING, 586 + PADDING),
+            this.createCorner("sigil_sun", 754 + PADDING, 162 + PADDING),
+            this.createCorner("sigil_xo", 157 + PADDING, 586 + PADDING),
             this.createCorner("sigil_triangle", 896 + PADDING, 581 + PADDING),
-            this.createCorner("sigil_xo", 533 + PADDING, 836 + PADDING),
+            this.createCorner("sigil_orbit", 533 + PADDING, 836 + PADDING),
         ]
         this.createSpawnpoint(304 + PADDING, 155 + PADDING);
         this.createSpawnpoint(754 + PADDING, 162 + PADDING);
@@ -128,8 +128,6 @@ export class Scene extends Phaser.Scene {
                 bodyA.onCollision(bodyB);
             } else if (bodyB.onCollision) {
                 bodyB.onCollision(bodyA);
-            } else if (bodyA.onCollision) {
-                bodyA.onCollision(bodyB);
             }
         });
 

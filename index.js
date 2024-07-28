@@ -13,7 +13,7 @@ const game = new Phaser.Game({
         default: 'matter',
         matter: {
             gravity: {y: 0},
-            debug: false
+            debug: true
         }
     },
     scene: Scene

@@ -49,18 +49,12 @@ export class Scene extends Phaser.Scene {
         this.add.image(0, 0, "board").setOrigin(0, 0)
         this.add.image(PADDING, PADDING, "sigil").setOrigin(0, 0)
         this.sigil_corners = [
-            this.matter.add.image(PADDING, PADDING, "sigil_orbit").setOrigin(0, 0),
-            this.matter.add.image(PADDING, PADDING, "sigil_rivets").setOrigin(0, 0),
-            this.matter.add.image(PADDING, PADDING, "sigil_sun").setOrigin(0, 0),
-            this.matter.add.image(PADDING, PADDING, "sigil_triangle").setOrigin(0, 0),
-            this.matter.add.image(PADDING, PADDING, "sigil_xo").setOrigin(0, 0),
+            this.createCorner("sigil_rivets", 304 + PADDING, 155 + PADDING),
+            this.createCorner("sigil_orbit", 754 + PADDING, 162 + PADDING),
+            this.createCorner("sigil_sun", 157 + PADDING, 586 + PADDING),
+            this.createCorner("sigil_triangle", 896 + PADDING, 581 + PADDING),
+            this.createCorner("sigil_xo", 533 + PADDING, 836 + PADDING),
         ]
-        this.sigil_corners.map(corner => {
-            corner.onCollision = (item)=>{
-
-            }
-            return corner.setSensor(true);
-        })
         this.createSpawnpoint(304 + PADDING, 155 + PADDING);
         this.createSpawnpoint(754 + PADDING, 162 + PADDING);
         this.createSpawnpoint(157 + PADDING, 586 + PADDING);
@@ -129,9 +123,9 @@ export class Scene extends Phaser.Scene {
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
-            if(bodyA.onCollision){
+            if (bodyA.onCollision) {
                 bodyA.onCollision(bodyB);
-            } else if(bodyB.onCollision){
+            } else if (bodyB.onCollision) {
                 bodyB.onCollision(bodyA);
             }
         });
@@ -165,6 +159,19 @@ export class Scene extends Phaser.Scene {
             swish_sound.play()
 
         }, this);
+    }
+
+    createCorner(key, x, y) {
+        let image = this.add.image(0, 0, key);
+        let corner = this.matter.add.gameObject(
+            image,
+            this.matter.add.circle(0, 0, 140)
+        );
+        image.setPosition(x, y).setDisplayOrigin(x - PADDING, y - PADDING);
+        corner.onCollision = (item) => {
+
+        }
+        return corner.setSensor(true)
     }
 
     createPowder(xStart, yStart, powder, velocityX, velocityY) {

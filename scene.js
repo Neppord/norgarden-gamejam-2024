@@ -138,34 +138,41 @@ export class Scene extends Phaser.Scene {
             }
             let y_start = gameObject.y;
             let x_start = gameObject.x;
-            let diff_x = gameObject.x - pointer.x;
-            let diff_y = gameObject.y - pointer.y;
-            let scale = 10;
-            const bowl_image = this.add.image(x_start, y_start, "bowl");
+
+            const bowl = this.create_bowl(x_start, y_start, this.selected_ingredient);
             this.selected_ingredient.quantity -= 1
             this.selected_ingredient.update_label()
-            const content_image = this.add.image(x_start, y_start, this.selected_ingredient.name);
-            content_image.setDisplaySize(100, 100)
-            bowl_image.setDisplaySize(100, 100)
-            const block = this.matter.add.circle(
-                x_start,
-                y_start,
-                50
-            );
-            block.ingredient_name = this.selected_ingredient.name;
-            const bowl = this.matter.add.gameObject(bowl_image, block);
-            const content = this.matter.add.gameObject(content_image, block);
-            block.objects_to_destroy = [
-                bowl, content
-            ]
-            bowl.setBounce(0.5);
-            bowl.setVelocity(0, 0);
-            bowl.setFriction(0.05, 0.01, 0.1);
-            bowl.setAngularVelocity(0);
+
+            let scale = 10;
+            let diff_x = x_start - pointer.x;
+            let diff_y = y_start - pointer.y;
             bowl.setVelocity(diff_x / scale, diff_y / scale);
             swish_sound.play()
 
         }, this);
+    }
+
+    create_bowl(x_start, y_start, ingredient) {
+        const bowl_image = this.add.image(x_start, y_start, "bowl");
+        const content_image = this.add.image(x_start, y_start, ingredient.name);
+        content_image.setDisplaySize(100, 100)
+        bowl_image.setDisplaySize(100, 100)
+        const block = this.matter.add.circle(
+            x_start,
+            y_start,
+            50
+        );
+        block.ingredient_name = ingredient.name;
+        const bowl = this.matter.add.gameObject(bowl_image, block);
+        const content = this.matter.add.gameObject(content_image, block);
+        block.objects_to_destroy = [
+            bowl, content
+        ]
+        bowl.setBounce(0.5);
+        bowl.setVelocity(0, 0);
+        bowl.setFriction(0.05, 0.01, 0.1);
+        bowl.setAngularVelocity(0);
+        return bowl;
     }
 
     getIngredientNames() {

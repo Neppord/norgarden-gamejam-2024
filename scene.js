@@ -116,22 +116,24 @@ export class Scene extends Phaser.Scene {
             let velocityX = bodyA.velocity.x;
             let velocityY = bodyB.velocity.y;
 
-            if (bodyA.ingredient_name === "leaf" && bodyB.ingredient_name === "leaf") {
+            let a_name = bodyA.ingredient_name;
+            let b_name = bodyB.ingredient_name;
+            if (a_name === "leaf" && b_name === "leaf") {
                 this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
-            } else if (bodyA.ingredient_name === "leaf" && bodyB.ingredient_name === "poppy") {
+            } else if (a_name === "leaf" && b_name === "poppy") {
                 this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
-            } else if (bodyA.ingredient_name === "poppy" && bodyB.ingredient_name === "leaf") {
+            } else if (a_name === "poppy" && b_name === "leaf") {
                 this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
-            } else if (bodyA.ingredient_name === "poppy" && bodyB.ingredient_name === "poppy") {
+            } else if (a_name === "poppy" && b_name === "poppy") {
                 this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())

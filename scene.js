@@ -111,10 +111,10 @@ export class Scene extends Phaser.Scene {
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
-            let xStart = bodyA.position.x;
-            let yStart = bodyA.position.y;
-            let velocityX = bodyA.velocity.x;
-            let velocityY = bodyB.velocity.y;
+            let xStart = (bodyA.position.x + bodyB.position.x) / 2;
+            let yStart = (bodyA.position.y + bodyB.position.y) / 2;
+            let velocityX = bodyA.velocity.x + bodyB.velocity.x;
+            let velocityY = bodyA.velocity.y + bodyB.velocity.y;
 
             let a_name = bodyA.ingredient_name;
             let b_name = bodyB.ingredient_name;

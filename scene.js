@@ -26,7 +26,10 @@ export class Scene extends Phaser.Scene {
         this.load.image("button1", "assets/button1.png")
         this.load.image("flask1", "assets/flask1.png")
         this.load.image("flask2", "assets/flask2.png")
-        this.getIngredientNames().forEach((item, index) => {
+        this.ingredients.map(i => i.name).forEach((item, index) => {
+            this.load.image(item, "assets/" + item + ".png");
+        })
+        this.powders.map(i => i.name).forEach((item, index) => {
             this.load.image(item, "assets/" + item + ".png");
         })
         this.load.audio("hit", "assets/hit.wav")
@@ -109,15 +112,12 @@ export class Scene extends Phaser.Scene {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
             if (bodyA.ingredient_name === bodyB.ingredient_name) {
+                let bowl = this.create_bowl(bodyA.position.x, bodyA.position.y, this.powders[0])
+                bowl.setVelocity(bodyA.velocity.x, bodyB.velocity.y)
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
-                let texture = "flask1";
-                if (bodyA.ingredient_name === "eye") texture = "flask2";
-                const flask = this.add.image(0, 300, texture);
-                flask.setInteractive()
-                this.flasks.push(flask)
-                this.position_flasks()
+
             }
         });
 

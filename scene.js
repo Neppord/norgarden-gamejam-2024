@@ -6,13 +6,15 @@ const PADDING = 43;
 export class Scene extends Phaser.Scene {
     ingredients = [
         new Ingredient("leaf", 0),
+        new Ingredient("eye", 0),
+        new Ingredient("poppy", 0),
+    ]
+    powders = [
         new Ingredient("dust_gold", 0),
         new Ingredient("dust_purple", 0),
         new Ingredient("dust_blue", 0),
         new Ingredient("dust_green", 0),
         new Ingredient("dust_red", 0),
-        new Ingredient("eye", 0),
-        new Ingredient("poppy", 0),
     ]
     flasks = []
     selected_ingredient = null

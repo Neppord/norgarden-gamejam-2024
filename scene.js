@@ -5,10 +5,10 @@ const PADDING = 43;
 
 export class Scene extends Phaser.Scene {
     ingredients = [
-        new Ingredient("leaf", 0),
-        new Ingredient("eye", 0),
-        new Ingredient("poppy", 0),
-        new Ingredient("heart", 0),
+        new Ingredient("leaf", 100),
+        new Ingredient("eye", 100),
+        new Ingredient("poppy", 100),
+        new Ingredient("heart", 100),
     ]
     powders = [
         new Ingredient("dust_gold", 0),
@@ -171,12 +171,38 @@ export class Scene extends Phaser.Scene {
         );
         image.setPosition(x, y).setDisplayOrigin(x - PADDING, y - PADDING);
         circle.onCollision = (item) => {
-            if(item.ingredient.name === "dust_gold"){
-                image.setTint("0x0000ff")
-            }else if (item.ingredient.name === "dust_blue"){
-                image.setTint("0x00ff00")
-            }else if (item.ingredient.name === "dust_purple"){
-                image.setTint("0xff0000")
+            if (item.components) {
+                if (circle.components) {
+                    circle.collisionFilter.mask = 0
+                    setTimeout(() => circle.collisionFilter.mask = 0xFFFFFFFF, 1000)
+
+                    circle.components.forEach((component, index) => {
+                        let diff_x = Phaser.Math.Between(-10, 10)
+                        let diff_y = Phaser.Math.Between(-10, 10)
+                        let bowl = this.create_bowl(x, y, component);
+                        bowl.setVelocity(diff_x, diff_y);
+                        return bowl;
+                    })
+                    item.components.forEach((component, index) => {
+                        let diff_x = Phaser.Math.Between(-10, 10)
+                        let diff_y = Phaser.Math.Between(-10, 10)
+                        let bowl = this.create_bowl(x, y, component);
+                        bowl.setVelocity(diff_x, diff_y);
+                        return bowl;
+                    })
+                    circle.components = undefined
+                    image.setTint("0xffffff")
+                } else {
+                    circle.components = item.components
+                    if (item.ingredient.name === "dust_gold") {
+                        image.setTint("0xffff00")
+                    } else if (item.ingredient.name === "dust_blue") {
+                        image.setTint("0x0000ff")
+                    } else if (item.ingredient.name === "dust_purple") {
+                        image.setTint("0xff00ff")
+                    }
+                }
+                item.objects_to_destroy.map(o => o.destroy())
             }
         }
         image.setInteractive()
@@ -185,7 +211,7 @@ export class Scene extends Phaser.Scene {
 
     createPowder(xStart, yStart, powder, velocityX, velocityY) {
         let bowl = this.create_bowl(xStart, yStart, powder)
-        bowl.setVelocity(velocityX, velocityY)
+        return bowl.setVelocity(velocityX, velocityY)
     }
 
     create_bowl(x_start, y_start, ingredient) {
@@ -221,19 +247,47 @@ export class Scene extends Phaser.Scene {
             let a_name = block.ingredient.name;
             let b_name = other.ingredient.name;
             if (a_name === "leaf" && b_name === "leaf") {
-                this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
+                let powder = this.createPowder(
+                    xStart,
+                    yStart,
+                    this.powders[0],
+                    velocityX,
+                    velocityY
+                );
+                powder.body.components = [block.ingredient, other.ingredient];
                 block.objects_to_destroy.forEach(o => o.destroy())
                 other.objects_to_destroy.forEach(o => o.destroy())
             } else if (a_name === "leaf" && b_name === "poppy") {
-                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                let powder = this.createPowder(
+                    xStart,
+                    yStart,
+                    this.powders[1],
+                    velocityX,
+                    velocityY
+                );
+                powder.body.components = [block.ingredient, other.ingredient];
                 block.objects_to_destroy.forEach(o => o.destroy())
                 other.objects_to_destroy.forEach(o => o.destroy())
             } else if (a_name === "poppy" && b_name === "leaf") {
-                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                let powder = this.createPowder(
+                    xStart,
+                    yStart,
+                    this.powders[1],
+                    velocityX,
+                    velocityY
+                );
+                powder.body.components = [block.ingredient, other.ingredient];
                 block.objects_to_destroy.forEach(o => o.destroy())
                 other.objects_to_destroy.forEach(o => o.destroy())
             } else if (a_name === "poppy" && b_name === "poppy") {
-                this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
+                let powder = this.createPowder(
+                    xStart,
+                    yStart,
+                    this.powders[2],
+                    velocityX,
+                    velocityY
+                );
+                powder.body.components = [block.ingredient, other.ingredient];
                 block.objects_to_destroy.forEach(o => o.destroy())
                 other.objects_to_destroy.forEach(o => o.destroy())
             }

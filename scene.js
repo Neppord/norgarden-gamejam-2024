@@ -48,11 +48,19 @@ export class Scene extends Phaser.Scene {
 
         this.add.image(0, 0, "board").setOrigin(0, 0)
         this.add.image(PADDING, PADDING, "sigil").setOrigin(0, 0)
-        this.add.image(PADDING, PADDING, "sigil_orbit").setOrigin(0, 0)
-        this.add.image(PADDING, PADDING, "sigil_rivets").setOrigin(0, 0)
-        this.add.image(PADDING, PADDING, "sigil_sun").setOrigin(0, 0)
-        this.add.image(PADDING, PADDING, "sigil_triangle").setOrigin(0, 0)
-        this.add.image(PADDING, PADDING, "sigil_xo").setOrigin(0, 0)
+        this.sigil_corners = [
+            this.matter.add.image(PADDING, PADDING, "sigil_orbit").setOrigin(0, 0),
+            this.matter.add.image(PADDING, PADDING, "sigil_rivets").setOrigin(0, 0),
+            this.matter.add.image(PADDING, PADDING, "sigil_sun").setOrigin(0, 0),
+            this.matter.add.image(PADDING, PADDING, "sigil_triangle").setOrigin(0, 0),
+            this.matter.add.image(PADDING, PADDING, "sigil_xo").setOrigin(0, 0),
+        ]
+        this.sigil_corners.map(corner => {
+            corner.onCollision = (item)=>{
+
+            }
+            return corner.setSensor(true);
+        })
         this.createSpawnpoint(304 + PADDING, 155 + PADDING);
         this.createSpawnpoint(754 + PADDING, 162 + PADDING);
         this.createSpawnpoint(157 + PADDING, 586 + PADDING);
@@ -121,29 +129,10 @@ export class Scene extends Phaser.Scene {
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
-            let xStart = (bodyA.position.x + bodyB.position.x) / 2;
-            let yStart = (bodyA.position.y + bodyB.position.y) / 2;
-            let velocityX = bodyA.velocity.x + bodyB.velocity.x;
-            let velocityY = bodyA.velocity.y + bodyB.velocity.y;
-
-            let a_name = bodyA.ingredient_name;
-            let b_name = bodyB.ingredient_name;
-            if (a_name === "leaf" && b_name === "leaf") {
-                this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
-                bodyA.objects_to_destroy.forEach(o => o.destroy())
-                bodyB.objects_to_destroy.forEach(o => o.destroy())
-            } else if (a_name === "leaf" && b_name === "poppy") {
-                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
-                bodyA.objects_to_destroy.forEach(o => o.destroy())
-                bodyB.objects_to_destroy.forEach(o => o.destroy())
-            } else if (a_name === "poppy" && b_name === "leaf") {
-                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
-                bodyA.objects_to_destroy.forEach(o => o.destroy())
-                bodyB.objects_to_destroy.forEach(o => o.destroy())
-            } else if (a_name === "poppy" && b_name === "poppy") {
-                this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
-                bodyA.objects_to_destroy.forEach(o => o.destroy())
-                bodyB.objects_to_destroy.forEach(o => o.destroy())
+            if(bodyA.onCollision){
+                bodyA.onCollision(bodyB);
+            } else if(bodyB.onCollision){
+                bodyB.onCollision(bodyA);
             }
         });
 
@@ -203,6 +192,32 @@ export class Scene extends Phaser.Scene {
         bowl.setVelocity(0, 0);
         bowl.setFriction(0.05, 0.01, 0.1);
         bowl.setAngularVelocity(0);
+        block.onCollision = (other) => {
+            let xStart = (block.position.x + other.position.x) / 2;
+            let yStart = (block.position.y + other.position.y) / 2;
+            let velocityX = block.velocity.x + other.velocity.x;
+            let velocityY = block.velocity.y + other.velocity.y;
+
+            let a_name = block.ingredient_name;
+            let b_name = other.ingredient_name;
+            if (a_name === "leaf" && b_name === "leaf") {
+                this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
+                block.objects_to_destroy.forEach(o => o.destroy())
+                other.objects_to_destroy.forEach(o => o.destroy())
+            } else if (a_name === "leaf" && b_name === "poppy") {
+                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                block.objects_to_destroy.forEach(o => o.destroy())
+                other.objects_to_destroy.forEach(o => o.destroy())
+            } else if (a_name === "poppy" && b_name === "leaf") {
+                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                block.objects_to_destroy.forEach(o => o.destroy())
+                other.objects_to_destroy.forEach(o => o.destroy())
+            } else if (a_name === "poppy" && b_name === "poppy") {
+                this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
+                block.objects_to_destroy.forEach(o => o.destroy())
+                other.objects_to_destroy.forEach(o => o.destroy())
+            }
+        }
         return bowl;
     }
 

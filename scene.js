@@ -171,11 +171,11 @@ export class Scene extends Phaser.Scene {
         );
         image.setPosition(x, y).setDisplayOrigin(x - PADDING, y - PADDING);
         circle.onCollision = (item) => {
-            if(item.ingredient_name === "dust_gold"){
+            if(item.ingredient.name === "dust_gold"){
                 image.setTint("0x0000ff")
-            }else if (item.ingredient_name === "dust_blue"){
+            }else if (item.ingredient.name === "dust_blue"){
                 image.setTint("0x00ff00")
-            }else if (item.ingredient_name === "dust_purple"){
+            }else if (item.ingredient.name === "dust_purple"){
                 image.setTint("0xff0000")
             }
         }
@@ -198,7 +198,7 @@ export class Scene extends Phaser.Scene {
             y_start,
             50
         );
-        block.ingredient_name = ingredient.name;
+        block.ingredient = ingredient;
         const bowl = this.matter.add.gameObject(bowl_image, block);
         const content = this.matter.add.gameObject(content_image, block);
         block.objects_to_destroy = [
@@ -209,13 +209,17 @@ export class Scene extends Phaser.Scene {
         bowl.setFriction(0.05, 0.01, 0.1);
         bowl.setAngularVelocity(0);
         block.onCollision = (other) => {
+            if (!other.ingredient) {
+                if (other.onCollision) other.onCollision(block);
+                return
+            }
             let xStart = (block.position.x + other.position.x) / 2;
             let yStart = (block.position.y + other.position.y) / 2;
             let velocityX = block.velocity.x + other.velocity.x;
             let velocityY = block.velocity.y + other.velocity.y;
 
-            let a_name = block.ingredient_name;
-            let b_name = other.ingredient_name;
+            let a_name = block.ingredient.name;
+            let b_name = other.ingredient.name;
             if (a_name === "leaf" && b_name === "leaf") {
                 this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
                 block.objects_to_destroy.forEach(o => o.destroy())

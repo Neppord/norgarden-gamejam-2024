@@ -57,17 +57,17 @@ export class Scene extends Phaser.Scene {
         booster_button.setInteractive()
         let shake = this.tweens.add({
             targets: booster_button,
-            angle: { from: -10, to: 10 },
+            angle: {from: -10, to: 10},
             duration: 100,
             ease: 'Sine.easeInOut',
             yoyo: true,
             repeat: -1,
-            paused:true,
+            paused: true,
         })
-        booster_button.on("pointerover", () =>{
+        booster_button.on("pointerover", () => {
             shake.play()
         })
-        booster_button.on("pointerout", () =>{
+        booster_button.on("pointerout", () => {
             shake.pause()
             this.tweens.add({
                 targets: booster_button,
@@ -111,13 +111,30 @@ export class Scene extends Phaser.Scene {
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             hit_sound.detune = Math.min(hit_sound.detune + 100, 2000);
             hit_sound.play();
-            if (bodyA.ingredient_name === bodyB.ingredient_name) {
-                let bowl = this.create_bowl(bodyA.position.x, bodyA.position.y, this.powders[0])
-                bowl.setVelocity(bodyA.velocity.x, bodyB.velocity.y)
+            let xStart = bodyA.position.x;
+            let yStart = bodyA.position.y;
+            let velocityX = bodyA.velocity.x;
+            let velocityY = bodyB.velocity.y;
+
+            if (bodyA.ingredient_name === "leaf" && bodyB.ingredient_name === "leaf") {
+                this.createPowder(xStart, yStart, this.powders[0], velocityX, velocityY);
                 bodyA.objects_to_destroy.forEach(o => o.destroy())
                 bodyB.objects_to_destroy.forEach(o => o.destroy())
 
+            } else if (bodyA.ingredient_name === "leaf" && bodyB.ingredient_name === "poppy") {
+                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                bodyA.objects_to_destroy.forEach(o => o.destroy())
+                bodyB.objects_to_destroy.forEach(o => o.destroy())
 
+            } else if (bodyA.ingredient_name === "poppy" && bodyB.ingredient_name === "leaf") {
+                this.createPowder(xStart, yStart, this.powders[1], velocityX, velocityY);
+                bodyA.objects_to_destroy.forEach(o => o.destroy())
+                bodyB.objects_to_destroy.forEach(o => o.destroy())
+
+            } else if (bodyA.ingredient_name === "poppy" && bodyB.ingredient_name === "poppy") {
+                this.createPowder(xStart, yStart, this.powders[2], velocityX, velocityY);
+                bodyA.objects_to_destroy.forEach(o => o.destroy())
+                bodyB.objects_to_destroy.forEach(o => o.destroy())
             }
         });
 
@@ -150,6 +167,11 @@ export class Scene extends Phaser.Scene {
             swish_sound.play()
 
         }, this);
+    }
+
+    createPowder(xStart, yStart, powder, velocityX, velocityY) {
+        let bowl = this.create_bowl(xStart, yStart, powder)
+        bowl.setVelocity(velocityX, velocityY)
     }
 
     create_bowl(x_start, y_start, ingredient) {

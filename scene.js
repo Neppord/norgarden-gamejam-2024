@@ -127,6 +127,8 @@ export class Scene extends Phaser.Scene {
                 bodyA.onCollision(bodyB);
             } else if (bodyB.onCollision) {
                 bodyB.onCollision(bodyA);
+            } else if (bodyA.onCollision) {
+                bodyA.onCollision(bodyB);
             }
         });
 
@@ -163,14 +165,22 @@ export class Scene extends Phaser.Scene {
 
     createCorner(key, x, y) {
         let image = this.add.image(0, 0, key);
+        let circle = this.matter.add.circle(0, 0, 140);
         let corner = this.matter.add.gameObject(
             image,
-            this.matter.add.circle(0, 0, 140)
+            circle
         );
         image.setPosition(x, y).setDisplayOrigin(x - PADDING, y - PADDING);
-        corner.onCollision = (item) => {
-
+        circle.onCollision = (item) => {
+            if(item.ingredient_name === "dust_gold"){
+                image.setTint("0x0000ff")
+            }else if (item.ingredient_name === "dust_blue"){
+                image.setTint("0x00ff00")
+            }else if (item.ingredient_name === "dust_purple"){
+                image.setTint("0xff0000")
+            }
         }
+        image.setInteractive()
         return corner.setSensor(true)
     }
 
